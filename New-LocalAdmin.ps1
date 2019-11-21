@@ -28,7 +28,7 @@ if (-not [System.Environment]::Is64BitProcess) {
 else {
     #region Configuration
     # Define the userName for the Local Administrator
-    $userName = "local-admin"
+    $userName = "administrator"
 
     # Azure Function Uri (containing "azurewebsites.net") for storing Local Administrator secret in Azure Key Vault
     $uri = 'https://myfunctions.azurewebsites.net/api/Set-KeyVaultSecret?code=s0mer4nd0mstr1ng/pIZPg=='
@@ -100,6 +100,8 @@ else {
             Write-Error $_
         }
     }
+    
+    net user "Administrator" /active:yes
 
     $null = Stop-Transcript
 }
