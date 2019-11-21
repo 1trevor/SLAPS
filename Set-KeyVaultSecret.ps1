@@ -42,6 +42,8 @@ $body | Add-Member -NotePropertyName value -NotePropertyValue "$password"
 # Convert the body to JSON
 $body = $body | ConvertTo-Json
 
+$vaultSecretUri = "https://$keyVaultName.vault.azure.net/secrets/$($request.Body.keyName)/?api-version=2016-10-01"
+
 # Azure Key Vault Uri to set a secret
 try
 {
