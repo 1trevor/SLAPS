@@ -52,9 +52,6 @@ else {
     }
 "@
 
-    # Use TLS 1.2 connection
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
     # Trigger Azure Function.
     try {
         $password = Invoke-RestMethod -Uri $uri -Method POST -Body $body -ContentType 'application/json' -ErrorAction Stop
