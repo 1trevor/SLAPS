@@ -101,7 +101,7 @@ else {
         }
     }
     
-    net user "Administrator" /active:yes
+    Get-LocalUser -Name $userName | Enable-LocalUser
 
     $null = Stop-Transcript
 }
