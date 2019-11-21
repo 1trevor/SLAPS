@@ -23,7 +23,7 @@ function New-Password {
     $numbers = 2..9
     $specialCharacters = '!,@,#,$,%,&,*,?,+'
     $array = @()
-    $array += $alphabets.Split(',') | Get-Random -Count 10
+    $array += $alphabets.Split(',') | Get-Random -Count 20
     $array[0] = $array[0].ToUpper()
     $array[-1] = $array[-1].ToUpper()
     $array += $numbers | Get-Random -Count 3
