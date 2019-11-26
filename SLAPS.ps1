@@ -1,7 +1,5 @@
 function main
 {
-    # Make safe to run multiple times
-    
     # Create file to hold script
     $scriptfolder = "C:\ProgramData\MyCompany\CorpIT\"
     $scriptname = "SLAPS.ps1"
@@ -22,15 +20,12 @@ function main
     $acl = get-acl "$scriptfolder$scriptname"
     $ar = New-Object System.Security.AccessControl.FileSystemAccessRule("NT AUTHORITY\SYSTEM","FullControl","Allow")
     $acl.AddAccessRule($ar)
-    
     $acl.SetAccessRuleProtection($true,$false)
     $acl | set-acl "$scriptfolder$scriptname"
-
 
     # Write script content to file
     $content = Get-ScriptContent
     $content | out-file "$scriptfolder$scriptname"
-
 
     # Check if scheduled task exists
     if(!(Get-ScheduledTask "SLAPS"))
