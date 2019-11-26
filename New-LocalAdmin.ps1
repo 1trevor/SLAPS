@@ -40,6 +40,8 @@ else {
 
     # start logging to TEMP in file "scriptname.log"
     $null = Start-Transcript -Path "$env:TEMP\$($(Split-Path $PSCommandPath -Leaf).ToLower().Replace(".ps1",".log"))"
+    
+    $AzureADDeviceDeviceID = (Get-ChildItem -Path "hklm:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\JoinInfo\" | select pschildname).PSChildName
 
     # Azure Function Request Body. Azure Function will strip the keyName and add a secret value. https://docs.microsoft.com/en-us/rest/api/keyvault/setsecret/setsecret
     $body = @"
@@ -47,11 +49,11 @@ else {
         "keyName": "$env:COMPUTERNAME",
         "contentType": "Local Administrator Credentials",
         "tags": {
-            "Username": "$userName"
+            "Username": "$userName",
+            "DeviceID": "$AzureADDeviceDeviceID"
         }
     }
 "@
-
     # Trigger Azure Function.
     try {
         $password = Invoke-RestMethod -Uri $uri -Method POST -Body $body -ContentType 'application/json' -ErrorAction Stop
