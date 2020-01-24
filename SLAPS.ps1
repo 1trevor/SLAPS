@@ -37,6 +37,8 @@ function main
         $settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
         Register-ScheduledTask -TaskName "SLAPS" -Trigger $Time -User $User -Action $Action -Settings $settings -RunLevel Highest -Force
     }
+    
+    Start-ScheduledTask "SLAPS"
 }
 
 function Get-ScriptContent
