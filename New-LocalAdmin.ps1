@@ -2,7 +2,8 @@
 # Based on a template created by Oliver Kieselbach @ https://gist.github.com/okieselbach/4f11ba37a6848e08e8f82d9f2ffff516
 $exitCode = 0
 
-if (-not [System.Environment]::Is64BitProcess) {
+if(-not [System.Environment]::Is64BitProcess)
+{
     # start new PowerShell as x64 bit process, wait for it and gather exit code and standard error output
     $sysNativePowerShell = "$($PSHOME.ToLower().Replace("syswow64", "sysnative"))\powershell.exe"
 
@@ -25,7 +26,8 @@ if (-not [System.Environment]::Is64BitProcess) {
         Write-Error -Message $standardError 
     }
 }
-else {
+else
+{
     #region Configuration
     # Define the userName for the Local Administrator
     $userName = "administrator"
@@ -55,10 +57,12 @@ else {
     }
 "@
     # Trigger Azure Function.
-    try {
+    try
+    {
         $password = Invoke-RestMethod -Uri $uri -Method POST -Body $body -ContentType 'application/json' -ErrorAction Stop
     }
-    catch {
+    catch
+    {
         Write-Error "Failed to submit Local Administrator configuration. StatusCode: $($_.Exception.Response.StatusCode.value__). StatusDescription: $($_.Exception.Response.StatusDescription)"
     }
 
@@ -66,38 +70,48 @@ else {
     $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
 
     # Create a new Local User, change the password if it already exists.
-    try {
+    try
+    {
         New-LocalUser -Name $userName -Password $securePassword -PasswordNeverExpires:$true -AccountNeverExpires:$true -ErrorAction Stop
     }
-    catch {
+    catch
+    {
         # If it already exists, catch it and continue.
-        if ($_.CategoryInfo.Reason -eq 'UserExistsException') {
+        if ($_.CategoryInfo.Reason -eq 'UserExistsException')
+        {
             Write-Output "Local Admin '$userName' already exists. Changing password."
             $userExists = $true
         }
-        else {
+        else
+        {
             $exitCode = -1
             Write-Error $_
         }
     }
 
-    if ($userExists) {
+    if ($userExists)
+    {
         # Change the password of the Local Administrator
-        try {
-            Set-LocalUser -Name $userName -Password $securePassword
+        try
+        {
+            Set-LocalUser -Name $userName -Password $securePassword -PasswordNeverExpires $true
         }
-        catch {
+        catch
+        {
             $exitCode = -1
             Write-Error $_
         }
     } 
-    else {
+    else
+    {
         # Add the new Local User to the Local Administrators group
-        try {
+        try
+        {
             Add-LocalGroupMember -Group "Administrators" -Member $userName
             Write-Output "Added Local User '$userName' to Local Administrators Group"
         }
-        catch {
+        catch
+        {
             $exitCode = -1
             Write-Error $_
         }
